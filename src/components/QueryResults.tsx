@@ -2,6 +2,7 @@ import React from 'react';
 
 import './QueryResults.css';
 import { PackageSearchResult } from '../redux/sagas/PackageApi';
+import PackageQueryResult from './PackageQueryResult';
 
 interface Props {
   query: string;
@@ -11,30 +12,28 @@ type State = {};
 
 class QueryResults extends React.Component<Props, State> {
   render() {
+    const id = 'query-results';
     if (this.props.query.length === 0) {
-      return <div id="query-results" />;
+      return <div id={id} />;
     }
-    const header = (
-      <p>
-        <u>Results for query:</u> <em>{this.props.query}</em>
-      </p>
-    );
     if (this.props.results.length === 0) {
       return (
-        <div id="query-results">
-          {header}
+        <div id={id}>
           <p>No results</p>
         </div>
       );
     }
     return (
-      <div id="query-results">
-        {header}
-        <ul>
-          {this.props.results.map(r => (
-            <li>{r.package.name}</li>
-          ))}
-        </ul>
+      <div id={id}>
+        <div className="query-results-cards">
+          <ul>
+            {this.props.results.map((r, key) => (
+              <li>
+                <PackageQueryResult key={key} package={r.package} score={r.score} searchScore={r.searchScore} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }

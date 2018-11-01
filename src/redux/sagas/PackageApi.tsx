@@ -1,6 +1,6 @@
 export type PackageSearchResult = {
   package: {
-    author: {
+    author?: {
       name: string;
       email: string;
     };
@@ -8,7 +8,7 @@ export type PackageSearchResult = {
     name: string;
     description: string;
     version: string;
-    keywords: string[];
+    keywords?: string[];
     links: {
       bugs?: string;
       homepage?: string;

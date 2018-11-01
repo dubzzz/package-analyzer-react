@@ -1,0 +1,18 @@
+#query-results .query-results-cards {
+  display: inline-block;
+  max-width: 1024px;
+}
+#query-results ul {
+  list-style: none;
+  padding: 0px;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+}
+
+#query-results ul li {
+  list-style-type: none;
+  flex: 1 0 auto;
+  width: 20%;
+  padding: 12px;
+}

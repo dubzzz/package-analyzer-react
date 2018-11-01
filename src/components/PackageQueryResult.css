@@ -1,0 +1,32 @@
+.card-avatar {
+  background-color: lightblue !important;
+}
+.card-header {
+  background-color: aliceblue;
+}
+.package-keywords {
+  margin-top: 1em;
+}
+.package-scores {
+  display: flex;
+  justify-content: space-evenly;
+  opacity: 0.5;
+}
+.package-score-0 {
+  background: rgb(150, 255, 255) !important;
+}
+.package-score-1 {
+  background: rgb(150, 240, 240) !important;
+}
+.package-score-2 {
+  background: rgb(150, 180, 180) !important;
+}
+.package-score-3 {
+  background: rgb(150, 120, 120) !important;
+}
+.package-score-4 {
+  background: rgb(150, 60, 60) !important;
+}
+.package-score-5 {
+  background: rgb(150, 0, 0) !important;
+}
