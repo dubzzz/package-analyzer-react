@@ -7,6 +7,7 @@ import PackageQueryResult from './PackageQueryResult';
 interface Props {
   query: string;
   results: PackageSearchResult[];
+  selectPackage: (packageName: string) => void;
 }
 type State = {};
 
@@ -29,7 +30,13 @@ class QueryResults extends React.Component<Props, State> {
           <ul>
             {this.props.results.map((r, key) => (
               <li>
-                <PackageQueryResult key={key} package={r.package} score={r.score} searchScore={r.searchScore} />
+                <PackageQueryResult
+                  key={key}
+                  package={r.package}
+                  score={r.score}
+                  searchScore={r.searchScore}
+                  select={() => this.props.selectPackage(r.package.name)}
+                />
               </li>
             ))}
           </ul>

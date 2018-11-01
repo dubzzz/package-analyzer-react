@@ -7,11 +7,13 @@ import CardContent from '@material-ui/core/CardContent/CardContent';
 import Typography from '@material-ui/core/Typography/Typography';
 import CardHeader from '@material-ui/core/CardHeader/CardHeader';
 import Avatar from '@material-ui/core/Avatar/Avatar';
+import { select } from 'redux-saga/effects';
 
 interface Props {
   package: PackageSearchResult['package'];
   score: PackageSearchResult['score'];
   searchScore: PackageSearchResult['searchScore'];
+  select: () => void;
 }
 type State = {};
 
@@ -26,7 +28,7 @@ class PackageQueryResult extends React.Component<Props, State> {
       quality: Math.round(5 * scores.quality)
     };
     return (
-      <Card>
+      <Card className="package-card" onClick={() => this.props.select()}>
         <CardHeader
           className="card-header"
           avatar={

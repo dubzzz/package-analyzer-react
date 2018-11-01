@@ -2,6 +2,11 @@
   display: inline-block;
   max-width: 1024px;
 }
+#package-selector.side-selector {
+  float: left;
+  width: 256px;
+  max-width: 256px;
+}
 #package-name-input {
   text-align: center;
 }

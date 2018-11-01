@@ -6,7 +6,7 @@ import { ReduxState } from '../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
-import { fetchPackagesListAction } from '../redux/actions';
+import { fetchPackagesListAction, switchToPackageDetailsMode } from '../redux/actions';
 import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
@@ -35,7 +35,7 @@ export class PackageSelector extends React.Component<Props, State> {
     const adornmentIcon =
       this.state.currentQuery !== this.props.query ? <Http /> : this.props.error == null ? <Done /> : <Error />;
     return (
-      <div id="package-selector">
+      <div id="package-selector" className={this.props.fullSize ? 'full-size-selector' : 'side-selector'}>
         <TextField
           id="package-name-input"
           label="Package Name"
@@ -47,7 +47,11 @@ export class PackageSelector extends React.Component<Props, State> {
           }}
         />
         {this.props.error == null ? (
-          <QueryResults query={this.props.query} results={this.props.results} />
+          <QueryResults
+            query={this.props.query}
+            results={this.props.results}
+            selectPackage={(packageName: string) => this.props.switchToPackageDetailsMode(packageName)}
+          />
         ) : (
           <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
         )}
@@ -57,12 +61,12 @@ export class PackageSelector extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: ReduxState) {
-  return state.packageDetails.suggestions;
+  return { ...state.packageDetails.suggestions, fullSize: state.packageDetails.packageDetailsMode == null };
 }
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
-  return { ...bindActionCreators({ fetchPackagesListAction }, dispatch) };
+  return { ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsMode }, dispatch) };
 }
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 

@@ -1,6 +1,11 @@
-import { Actions, ActionUpdatePackagesList, ActionErrorPackagesList } from '../actions';
+import {
+  Actions,
+  ActionUpdatePackagesList,
+  ActionErrorPackagesList,
+  ActionSwitchToPackageDetailsMode
+} from '../actions';
 import { PackageSearchResult } from '../sagas/PackageApi';
-import { UPDATE_PACKAGES_LIST, ERROR_PACKAGES_LIST } from '../actionTypes';
+import { UPDATE_PACKAGES_LIST, ERROR_PACKAGES_LIST, SWITCH_TO_PACKAGE_DETAILS } from '../actionTypes';
 
 type PackageDetailsState = {
   suggestions: {
@@ -8,6 +13,7 @@ type PackageDetailsState = {
     results: PackageSearchResult[];
     error?: string;
   };
+  packageDetailsMode?: string;
 };
 const initialState: PackageDetailsState = {
   suggestions: {
@@ -29,6 +35,12 @@ export default function(state = initialState, action: Actions) {
         payload: { query, error }
       } = action as ActionErrorPackagesList;
       return { ...state, suggestions: { query, results: [], error } };
+    }
+    case SWITCH_TO_PACKAGE_DETAILS: {
+      const {
+        payload: { packageName }
+      } = action as ActionSwitchToPackageDetailsMode;
+      return { ...state, packageDetailsMode: packageName };
     }
     default:
       return state;

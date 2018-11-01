@@ -1,3 +1,15 @@
+.package-card:hover {
+  background-color: aliceblue;
+  cursor: pointer;
+}
+.package-card:hover .card-header {
+  background-color: lightblue;
+}
+.package-card:hover .card-avatar {
+  background-color: white !important;
+  color: lightblue;
+}
+
 .card-avatar {
   background-color: lightblue !important;
 }
