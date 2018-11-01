@@ -1,11 +1,18 @@
-import { Actions, ActionUpdatePackagesList, ActionFetchPackagesList } from '../actions';
-import { PackagesList } from '../sagas/PackageApi';
-import { UPDATE_PACKAGES_LIST, FETCH_PACKAGES_LIST } from '../actionTypes';
+import { Actions, ActionUpdatePackagesList, ActionErrorPackagesList } from '../actions';
+import { PackageSearchResult } from '../sagas/PackageApi';
+import { UPDATE_PACKAGES_LIST, ERROR_PACKAGES_LIST } from '../actionTypes';
 
-const initialState = {
+type PackageDetailsState = {
+  suggestions: {
+    query: string;
+    results: PackageSearchResult[];
+    error?: string;
+  };
+};
+const initialState: PackageDetailsState = {
   suggestions: {
     query: '',
-    results: [] as PackagesList
+    results: []
   }
 };
 
@@ -16,6 +23,12 @@ export default function(state = initialState, action: Actions) {
         payload: { query, searchResults }
       } = action as ActionUpdatePackagesList;
       return { ...state, suggestions: { query, results: searchResults } };
+    }
+    case ERROR_PACKAGES_LIST: {
+      const {
+        payload: { query, error }
+      } = action as ActionErrorPackagesList;
+      return { ...state, suggestions: { query, results: [], error } };
     }
     default:
       return state;

@@ -7,9 +7,11 @@ import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
 import { fetchPackagesListAction } from '../redux/actions';
+import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
 import Http from '@material-ui/icons/Http';
+import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 
 interface Props extends StateProps, DispatchProps {}
@@ -21,12 +23,17 @@ export class PackageSelector extends React.Component<Props, State> {
     super(props);
     this.state = { currentQuery: '' };
   }
+  fetchQuery(query: string) {
+    this.props.fetchPackagesListAction(query, PackageSelector.NumResultsPerQuery);
+  }
   fetch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.currentTarget.value;
     this.setState({ currentQuery: query });
-    this.props.fetchPackagesListAction(query, PackageSelector.NumResultsPerQuery);
+    this.fetchQuery(query);
   }
   render() {
+    const adornmentIcon =
+      this.state.currentQuery !== this.props.query ? <Http /> : this.props.error == null ? <Done /> : <Error />;
     return (
       <div id="package-selector">
         <TextField
@@ -36,14 +43,14 @@ export class PackageSelector extends React.Component<Props, State> {
           onChange={(event: ChangeEvent<HTMLInputElement>) => this.fetch(event)}
           value={this.state.currentQuery}
           InputProps={{
-            endAdornment: (
-              <InputAdornment position="start">
-                {this.state.currentQuery !== this.props.query ? <Http /> : <Done />}
-              </InputAdornment>
-            )
+            endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
           }}
         />
-        <QueryResults query={this.props.query} results={this.props.results} />
+        {this.props.error == null ? (
+          <QueryResults query={this.props.query} results={this.props.results} />
+        ) : (
+          <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
+        )}
       </div>
     );
   }

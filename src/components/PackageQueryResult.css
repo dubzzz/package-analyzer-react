@@ -3,11 +3,13 @@
 }
 .card-header {
   background-color: aliceblue;
+  word-break: break-all;
 }
 .package-keywords {
   margin-top: 1em;
 }
 .package-scores {
+  padding-top: 1em;
   display: flex;
   justify-content: space-evenly;
   opacity: 0.5;

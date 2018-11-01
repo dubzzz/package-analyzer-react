@@ -30,8 +30,12 @@ export type PackagesList = PackageSearchResult[];
 
 export class PackageApi {
   static async list(query: string, num: number) {
+    if (query.length === 0) {
+      return [];
+    }
     const url = `https://api.npms.io/v2/search/suggestions?q=${encodeURIComponent(query)}&size=${num}`;
     const response = await fetch(url);
+    if (!response.ok) throw new Error(`[Status: ${response.status}] ${response.statusText}`);
     return (await response.json()) as PackagesList;
   }
 }

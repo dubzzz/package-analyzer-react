@@ -42,7 +42,7 @@ class PackageQueryResult extends React.Component<Props, State> {
             {authorName}
           </Typography>
           <Typography component="p">{this.props.package.description}</Typography>
-          <p className="package-scores">
+          <div className="package-scores">
             <Avatar title="maintenance [0-5]" className={`package-score-${adjustedScores.maintenance}`}>
               {adjustedScores.maintenance}
             </Avatar>
@@ -52,7 +52,7 @@ class PackageQueryResult extends React.Component<Props, State> {
             <Avatar title="quality [0-5]" className={`package-score-${adjustedScores.quality}`}>
               {adjustedScores.quality}
             </Avatar>
-          </p>
+          </div>
         </CardContent>
       </Card>
     );
