@@ -1,7 +1,6 @@
 import { Actions } from '../actions';
 
-const initialState = {
-};
+const initialState = {};
 
 export default function(state = initialState, action: Actions) {
   switch (action.type) {
