@@ -51,5 +51,6 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "homepage": "https://dubzzz.github.io/package-analyzer-react"
 }
