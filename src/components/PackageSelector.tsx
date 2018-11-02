@@ -6,7 +6,7 @@ import { ReduxState } from '../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
-import { fetchPackagesListAction, switchToPackageDetailsMode } from '../redux/actions';
+import { fetchPackagesListAction, switchToPackageDetailsModeAction } from '../redux/actions';
 import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
@@ -50,7 +50,7 @@ export class PackageSelector extends React.Component<Props, State> {
           <QueryResults
             query={this.props.query}
             results={this.props.results}
-            selectPackage={(packageName: string) => this.props.switchToPackageDetailsMode(packageName)}
+            selectPackage={(packageName: string) => this.props.switchToPackageDetailsModeAction(packageName)}
           />
         ) : (
           <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
@@ -66,7 +66,7 @@ function mapStateToProps(state: ReduxState) {
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
-  return { ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsMode }, dispatch) };
+  return { ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsModeAction }, dispatch) };
 }
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 

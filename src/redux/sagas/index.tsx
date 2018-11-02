@@ -1,8 +1,16 @@
 import { SagaIterator } from 'redux-saga';
-import { takeLatest, call, put } from 'redux-saga/effects';
-import { FETCH_PACKAGES_LIST } from '../actionTypes';
-import { ActionFetchPackagesList, updatePackagesListAction, errorPackagesListAction } from '../actions';
-import { PackageApi, PackagesList } from './PackageApi';
+import { takeLatest, call, put, takeEvery } from 'redux-saga/effects';
+import { FETCH_PACKAGES_LIST, FETCH_MULTIPLE_PACKAGES_DETAILS } from '../actionTypes';
+import {
+  ActionFetchPackagesList,
+  updatePackagesListAction,
+  errorPackagesListAction,
+  ActionFetchMultiplePackagesDetails,
+  updatePackageDetailsAction,
+  errorPackageDetailsAction,
+  startMultiplePackagesDetailsAction
+} from '../actions';
+import { PackageApi, PackagesList, Deps } from './PackageApi';
 
 function* fetchPackagesList(action: ActionFetchPackagesList) {
   const {
@@ -16,6 +24,22 @@ function* fetchPackagesList(action: ActionFetchPackagesList) {
   }
 }
 
+function* fetchMultiplePackagesDetails(action: ActionFetchMultiplePackagesDetails) {
+  const {
+    payload: { packages }
+  } = action;
+  yield put(startMultiplePackagesDetailsAction(packages));
+  for (const packageName of packages) {
+    try {
+      const depsDetails: Deps = yield call(() => PackageApi.deps(packageName));
+      yield put(updatePackageDetailsAction(packageName, depsDetails));
+    } catch (error) {
+      yield put(errorPackageDetailsAction(packageName, (error as any).message || String(error)));
+    }
+  }
+}
+
 export default function* rootSaga(): SagaIterator {
   yield takeLatest(FETCH_PACKAGES_LIST, fetchPackagesList);
+  yield takeEvery(FETCH_MULTIPLE_PACKAGES_DETAILS, fetchMultiplePackagesDetails);
 }

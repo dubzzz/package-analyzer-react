@@ -29,7 +29,7 @@ class QueryResults extends React.Component<Props, State> {
         <div className="query-results-cards">
           <ul>
             {this.props.results.map((r, key) => (
-              <li>
+              <li key={`li-${key}`}>
                 <PackageQueryResult
                   key={key}
                   package={r.package}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import PackageSelector from './components/PackageSelector';
+import PackageDetailsGraph from './components/PackageDetailsGraph';
 
 class App extends Component {
   render() {
@@ -8,6 +9,7 @@ class App extends Component {
       <div id="main">
         <h1>Package Analyzer</h1>
         <PackageSelector />
+        <PackageDetailsGraph />
       </div>
     );
   }
