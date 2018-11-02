@@ -5,7 +5,8 @@ import './PackageSelector.css';
 import { ReduxState } from '../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
-import { InteractiveForceGraph, ForceGraphNode, ForceGraphArrowLink } from 'react-vis-force';
+import { ForceGraph2D } from 'react-force-graph';
+
 import { DependenciesStatus } from '../redux/reducers/packageDetails';
 import { fetchMultiplePackagesDetailsAction } from '../redux/actions';
 
@@ -70,31 +71,30 @@ class PackageDetailsGraph extends React.Component<Props, State> {
       this.setState(state);
     }
   }
+  hoverNode(node: any) {
+    console.log(`Hover: `, node);
+  }
+  clickNode(node: any) {
+    console.log(`Click: `, node);
+  }
   render() {
     if (this.props.packageName == null || this.state.data == null) {
       return <div className="package-details no-display" />;
     }
-    const nodes = this.state.data.nodes.map(n => (
-      <ForceGraphNode key={n.label} node={{ id: n.label, label: n.label }} fill={n.color} />
-    ));
-    const links = this.state.data.links.map(l => (
-      <ForceGraphArrowLink key={`${l.source} -> ${l.target}`} link={{ target: l.target, source: l.source }} />
-    ));
+    const nodes = this.state.data.nodes.map(n => ({ id: n.label, color: n.color }));
+    const links = this.state.data.links;
     return (
       <div className="package-details">
         <h2>
           {this.props.packageName} ({this.state.data.nodes.length} packages)
         </h2>
-        <InteractiveForceGraph
-          key={this.props.packageName}
-          zoom="true"
-          simulationOptions={{ animate: true, width: 800, height: 600 }}
-          labelAttr="label"
-          highlightDependencies
-        >
-          {nodes}
-          {links}
-        </InteractiveForceGraph>
+        <ForceGraph2D
+          graphData={{ nodes, links }}
+          nodeLabel="id"
+          width={800}
+          height={600}
+          linkDirectionalParticles={1}
+        />
       </div>
     );
   }
