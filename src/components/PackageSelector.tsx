@@ -6,7 +6,7 @@ import { ReduxState } from '../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
-import { fetchPackagesListAction, switchToPackageDetailsModeAction } from '../redux/actions';
+import { fetchPackagesListAction, switchToPackageDetailsModeAction, switchToSearchModeAction } from '../redux/actions';
 import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
@@ -24,12 +24,18 @@ export class PackageSelector extends React.Component<Props, State> {
     this.state = { currentQuery: '' };
   }
   fetchQuery(query: string) {
+    if (!this.props.fullSize) {
+      this.props.switchToSearchModeAction();
+    }
     this.props.fetchPackagesListAction(query, PackageSelector.NumResultsPerQuery);
   }
   fetch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.currentTarget.value;
     this.setState({ currentQuery: query });
     this.fetchQuery(query);
+  }
+  openPackage(packageName: string) {
+    this.props.switchToPackageDetailsModeAction(packageName);
   }
   render() {
     const adornmentIcon =
@@ -41,19 +47,24 @@ export class PackageSelector extends React.Component<Props, State> {
           label="Package Name"
           variant="outlined"
           onChange={(event: ChangeEvent<HTMLInputElement>) => this.fetch(event)}
+          onClick={() => this.props.switchToSearchModeAction()}
           value={this.state.currentQuery}
           InputProps={{
             endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
           }}
         />
-        {this.props.error == null ? (
-          <QueryResults
-            query={this.props.query}
-            results={this.props.results}
-            selectPackage={(packageName: string) => this.props.switchToPackageDetailsModeAction(packageName)}
-          />
+        {this.props.fullSize ? (
+          this.props.error == null ? (
+            <QueryResults
+              query={this.props.query}
+              results={this.props.results}
+              selectPackage={(packageName: string) => this.openPackage(packageName)}
+            />
+          ) : (
+            <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
+          )
         ) : (
-          <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
+          undefined
         )}
       </div>
     );
@@ -66,7 +77,12 @@ function mapStateToProps(state: ReduxState) {
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
-  return { ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsModeAction }, dispatch) };
+  return {
+    ...bindActionCreators(
+      { fetchPackagesListAction, switchToPackageDetailsModeAction, switchToSearchModeAction },
+      dispatch
+    )
+  };
 }
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 

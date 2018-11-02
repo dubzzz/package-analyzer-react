@@ -6,7 +6,8 @@ import {
   UPDATE_PACKAGE_DETAILS,
   ERROR_PACKAGE_DETAILS,
   FETCH_MULTIPLE_PACKAGES_DETAILS,
-  START_MULTIPLE_PACKAGES_DETAILS
+  START_MULTIPLE_PACKAGES_DETAILS,
+  SWITCH_TO_SEARCH_MODE
 } from './actionTypes';
 import { PackagesList, Deps } from './sagas/PackageApi';
 
@@ -21,6 +22,10 @@ export const updatePackagesListAction = (query: string, searchResults: PackagesL
 export const errorPackagesListAction = (query: string, error: string) => ({
   type: ERROR_PACKAGES_LIST,
   payload: { query, error }
+});
+export const switchToSearchModeAction = () => ({
+  type: SWITCH_TO_SEARCH_MODE,
+  payload: {}
 });
 export const switchToPackageDetailsModeAction = (packageName: string) => ({
   type: SWITCH_TO_PACKAGE_DETAILS,

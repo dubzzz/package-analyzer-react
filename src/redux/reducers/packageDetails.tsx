@@ -14,7 +14,8 @@ import {
   SWITCH_TO_PACKAGE_DETAILS,
   UPDATE_PACKAGE_DETAILS,
   ERROR_PACKAGE_DETAILS,
-  START_MULTIPLE_PACKAGES_DETAILS
+  START_MULTIPLE_PACKAGES_DETAILS,
+  SWITCH_TO_SEARCH_MODE
 } from '../actionTypes';
 
 export enum DependenciesStatus {
@@ -58,6 +59,9 @@ export default function(state = initialState, action: Actions) {
         payload: { query, error }
       } = action as ActionErrorPackagesList;
       return { ...state, suggestions: { query, results: [], error } };
+    }
+    case SWITCH_TO_SEARCH_MODE: {
+      return { ...state, packageDetailsMode: undefined };
     }
     case SWITCH_TO_PACKAGE_DETAILS: {
       const {
