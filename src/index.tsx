@@ -13,11 +13,11 @@ import DetailsPage from './components/DetailsPage';
 const rootElement = document.getElementById('root');
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div id="main">
         <h1>Package Analyzer</h1>
-        <Route exact path={`${process.env.PUBLIC_URL}/`} component={SearchPage} />
-        <Route path={`${process.env.PUBLIC_URL}/details/:package`} component={DetailsPage} />
+        <Route exact path="/" component={SearchPage} />
+        <Route path="/details/:package" component={DetailsPage} />
       </div>
     </Router>
   </Provider>,
