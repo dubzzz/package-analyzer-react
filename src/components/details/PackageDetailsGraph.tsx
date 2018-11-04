@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 
 import './PackageDetailsGraph.css';
@@ -9,6 +9,7 @@ import { ForceGraph2D } from 'react-force-graph';
 
 import { DependenciesStatus } from '../../redux/reducers/packageDetails';
 import { fetchMultiplePackagesDetailsAction } from '../../redux/actions';
+import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 
 interface Props extends StateProps, DispatchProps {
   packageName: string;
@@ -18,6 +19,8 @@ type State = {
     nodes: { label: string; color: string }[];
     links: { source: string; target: string }[];
   };
+  total: number;
+  numLoading: number;
 };
 
 class PackageDetailsGraph extends React.Component<Props, State> {
@@ -31,10 +34,13 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     const unscanned: string[] = [];
     let ready = true;
 
+    let total = 0;
+    let numLoading = 0;
     const antiDuplicates: { [packageName: string]: true } =
       props.packageName != null ? { [props.packageName]: true } : {};
     const unvisited = props.packageName != null ? [props.packageName] : [];
     while (unvisited.length > 0) {
+      ++total;
       const currentPackage = unvisited.pop()!;
       const deps = props.knownDependencies[currentPackage];
       if (deps == null) {
@@ -49,6 +55,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
           break;
         case DependenciesStatus.OnGoing:
           nodes.push({ color: 'green', label: currentPackage });
+          ++numLoading;
           ready = false;
           break;
         case DependenciesStatus.Success:
@@ -68,7 +75,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
       console.warn(`Asking some more packages: `, unscanned);
       this.props.fetchMultiplePackagesDetailsAction(unscanned);
     }
-    return ready ? { data: { nodes, links } } : {};
+    return ready ? { data: { nodes, links }, total, numLoading } : { total, numLoading };
   }
   componentWillReceiveProps(nextProps: Props) {
     const state = this.computeState(nextProps);
@@ -77,8 +84,17 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     }
   }
   render() {
-    if (this.props.packageName == null || this.state.data == null) {
-      return <div className="package-details no-display" />;
+    if (this.props.packageName == null) {
+      return <Fragment />;
+    }
+    if (this.state.data == null) {
+      return (
+        <Fragment>
+          <CircularProgress />
+          <div>Currently loading {this.state.numLoading} package(s)...</div>
+          <div>Over {this.state.total} detected</div>
+        </Fragment>
+      );
     }
     const nodes = this.state.data.nodes.map(n => ({ id: n.label, color: n.color }));
     const links = this.state.data.links;
