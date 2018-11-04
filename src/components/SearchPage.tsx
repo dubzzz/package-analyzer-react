@@ -5,6 +5,6 @@ import RouteRedirect from './router/RouteRedirect';
 export default () => (
   <Fragment>
     <RouteRedirect />
-    <PackageSelector fullSize={true} />
+    <PackageSelector />
   </Fragment>
 );

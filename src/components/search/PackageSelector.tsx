@@ -18,9 +18,7 @@ import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 
-interface Props extends StateProps, DispatchProps {
-  fullSize: boolean;
-}
+interface Props extends StateProps, DispatchProps {}
 type State = { currentQuery: string };
 
 export class PackageSelector extends React.Component<Props, State> {
@@ -30,9 +28,6 @@ export class PackageSelector extends React.Component<Props, State> {
     this.state = { currentQuery: props.query };
   }
   fetchQuery(query: string) {
-    if (!this.props.fullSize) {
-      this.props.switchToSearchModeAction();
-    }
     this.props.fetchPackagesListAction(query, PackageSelector.NumResultsPerQuery);
   }
   fetch(event: ChangeEvent<HTMLInputElement>) {
@@ -47,30 +42,25 @@ export class PackageSelector extends React.Component<Props, State> {
     const adornmentIcon =
       this.state.currentQuery !== this.props.query ? <Http /> : this.props.error == null ? <Done /> : <Error />;
     return (
-      <div id="package-selector" className={this.props.fullSize ? 'full-size-selector' : 'side-selector'}>
+      <div id="package-selector">
         <TextField
           id="package-name-input"
           label="Package Name"
           variant="outlined"
           onChange={(event: ChangeEvent<HTMLInputElement>) => this.fetch(event)}
-          onClick={() => this.props.switchToSearchModeAction()}
           value={this.state.currentQuery}
           InputProps={{
             endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
           }}
         />
-        {this.props.fullSize ? (
-          this.props.error == null ? (
-            <QueryResults
-              query={this.props.query}
-              results={this.props.results}
-              selectPackage={(packageName: string) => this.openPackage(packageName)}
-            />
-          ) : (
-            <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
-          )
+        {this.props.error == null ? (
+          <QueryResults
+            query={this.props.query}
+            results={this.props.results}
+            selectPackage={(packageName: string) => this.openPackage(packageName)}
+          />
         ) : (
-          undefined
+          <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
         )}
       </div>
     );
@@ -84,10 +74,7 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
   return {
-    ...bindActionCreators(
-      { fetchPackagesListAction, switchToPackageDetailsModeAction, switchToSearchModeAction },
-      dispatch
-    )
+    ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsModeAction }, dispatch)
   };
 }
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
