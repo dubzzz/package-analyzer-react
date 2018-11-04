@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import './PackageDetailsGraph.css';
-import { ReduxState } from '../redux/reducers';
+import { ReduxState } from '../../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import { ForceGraph2D } from 'react-force-graph';
 
-import { DependenciesStatus } from '../redux/reducers/packageDetails';
-import { fetchMultiplePackagesDetailsAction } from '../redux/actions';
+import { DependenciesStatus } from '../../redux/reducers/packageDetails';
+import { fetchMultiplePackagesDetailsAction } from '../../redux/actions';
 
 interface Props extends StateProps, DispatchProps {}
 type State = {

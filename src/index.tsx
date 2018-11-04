@@ -6,11 +6,14 @@ import store from './redux/store';
 
 import './index.css';
 import App from './App';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router>
+      <Route path="/" component={App} />
+    </Router>
   </Provider>,
   rootElement
 );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import PackageSelector from './components/PackageSelector';
-import PackageDetailsGraph from './components/PackageDetailsGraph';
+import PackageSelector from './components/search/PackageSelector';
+import PackageDetailsGraph from './components/details/PackageDetailsGraph';
 
 class App extends Component {
   render() {

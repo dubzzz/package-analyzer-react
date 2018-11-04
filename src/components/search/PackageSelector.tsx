@@ -2,11 +2,15 @@ import React, { ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 
 import './PackageSelector.css';
-import { ReduxState } from '../redux/reducers';
+import { ReduxState } from '../../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
-import { fetchPackagesListAction, switchToPackageDetailsModeAction, switchToSearchModeAction } from '../redux/actions';
+import {
+  fetchPackagesListAction,
+  switchToPackageDetailsModeAction,
+  switchToSearchModeAction
+} from '../../redux/actions';
 import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';

@@ -1,13 +1,12 @@
 import React from 'react';
 
 import './PackageQueryResult.css';
-import { PackageSearchResult } from '../redux/sagas/PackageApi';
+import { PackageSearchResult } from '../../redux/sagas/PackageApi';
 import Card from '@material-ui/core/Card/Card';
 import CardContent from '@material-ui/core/CardContent/CardContent';
 import Typography from '@material-ui/core/Typography/Typography';
 import CardHeader from '@material-ui/core/CardHeader/CardHeader';
 import Avatar from '@material-ui/core/Avatar/Avatar';
-import { select } from 'redux-saga/effects';
 
 interface Props {
   package: PackageSearchResult['package'];

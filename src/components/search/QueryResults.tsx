@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './QueryResults.css';
-import { PackageSearchResult } from '../redux/sagas/PackageApi';
+import { PackageSearchResult } from '../../redux/sagas/PackageApi';
 import PackageQueryResult from './PackageQueryResult';
 
 interface Props {
