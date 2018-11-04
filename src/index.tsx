@@ -16,8 +16,8 @@ ReactDOM.render(
     <Router>
       <div id="main">
         <h1>Package Analyzer</h1>
-        <Route exact path="/" component={SearchPage} />
-        <Route path="/details/:package" component={DetailsPage} />
+        <Route exact path={`${process.env.PUBLIC_URL}/`} component={SearchPage} />
+        <Route path={`${process.env.PUBLIC_URL}/details/:package`} component={DetailsPage} />
       </div>
     </Router>
   </Provider>,
