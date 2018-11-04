@@ -1,3 +1,9 @@
 .package-details.no-display {
   display: none;
 }
+
+.package-force-directed {
+  display: inline-block;
+  width: 800px;
+  text-align: left;
+}

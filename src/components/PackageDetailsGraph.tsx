@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import './PackageSelector.css';
+import './PackageDetailsGraph.css';
 import { ReduxState } from '../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
@@ -88,13 +88,15 @@ class PackageDetailsGraph extends React.Component<Props, State> {
         <h2>
           {this.props.packageName} ({this.state.data.nodes.length} packages)
         </h2>
-        <ForceGraph2D
-          graphData={{ nodes, links }}
-          nodeLabel="id"
-          width={800}
-          height={600}
-          linkDirectionalParticles={1}
-        />
+        <div className="package-force-directed">
+          <ForceGraph2D
+            graphData={{ nodes, links }}
+            nodeLabel="id"
+            width={800}
+            height={600}
+            linkDirectionalParticles={1}
+          />
+        </div>
       </div>
     );
   }
