@@ -29,11 +29,11 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     const unscanned: string[] = [];
     let ready = true;
 
-    const antiDuplicates: { [packageName: string]: true } = {};
+    const antiDuplicates: { [packageName: string]: true } =
+      props.packageName != null ? { [props.packageName]: true } : {};
     const unvisited = props.packageName != null ? [props.packageName] : [];
     while (unvisited.length > 0) {
       const currentPackage = unvisited.pop()!;
-      antiDuplicates[currentPackage] = true;
       const deps = props.knownDependencies[currentPackage];
       if (deps == null) {
         nodes.push({ color: 'black', label: currentPackage });
@@ -56,7 +56,10 @@ class PackageDetailsGraph extends React.Component<Props, State> {
       }
       for (const requirement of deps.dependencies) {
         links.push({ target: currentPackage, source: requirement });
-        if (!antiDuplicates[requirement]) unvisited.push(requirement);
+        if (!antiDuplicates[requirement]) {
+          unvisited.push(requirement);
+          antiDuplicates[requirement] = true;
+        }
       }
     }
     if (unscanned.length > 0) {
