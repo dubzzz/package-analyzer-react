@@ -76,14 +76,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
       this.setState(state);
     }
   }
-  hoverNode(node: any) {
-    console.log(`Hover: `, node);
-  }
-  clickNode(node: any) {
-    console.log(`Click: `, node);
-  }
   render() {
-    console.log(this.props.packageName);
     if (this.props.packageName == null || this.state.data == null) {
       return <div className="package-details no-display" />;
     }
