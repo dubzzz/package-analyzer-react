@@ -7,7 +7,8 @@ import {
   ERROR_PACKAGE_DETAILS,
   FETCH_MULTIPLE_PACKAGES_DETAILS,
   START_MULTIPLE_PACKAGES_DETAILS,
-  SWITCH_TO_SEARCH_MODE
+  SWITCH_TO_SEARCH_MODE,
+  END_OF_REDIRECT
 } from './actionTypes';
 import { PackagesList, Deps } from './sagas/PackageApi';
 
@@ -31,6 +32,10 @@ export const switchToPackageDetailsModeAction = (packageName: string) => ({
   type: SWITCH_TO_PACKAGE_DETAILS,
   payload: { packageName }
 });
+export const endOfRedirectAction = () => ({
+  type: END_OF_REDIRECT,
+  payload: {}
+});
 export const fetchMultiplePackagesDetailsAction = (packages: string[]) => ({
   type: FETCH_MULTIPLE_PACKAGES_DETAILS,
   payload: { packages }
@@ -51,7 +56,9 @@ export const errorPackageDetailsAction = (packageName: string, error: string) =>
 export type ActionFetchPackagesList = ReturnType<typeof fetchPackagesListAction>;
 export type ActionUpdatePackagesList = ReturnType<typeof updatePackagesListAction>;
 export type ActionErrorPackagesList = ReturnType<typeof errorPackagesListAction>;
+export type ActionSwitchToSearchMode = ReturnType<typeof switchToSearchModeAction>;
 export type ActionSwitchToPackageDetailsMode = ReturnType<typeof switchToPackageDetailsModeAction>;
+export type ActionEndOfRedirect = ReturnType<typeof endOfRedirectAction>;
 export type ActionFetchMultiplePackagesDetails = ReturnType<typeof fetchMultiplePackagesDetailsAction>;
 export type ActionStartMultiplePackagesDetails = ReturnType<typeof startMultiplePackagesDetailsAction>;
 export type ActionUpdatePackageDetails = ReturnType<typeof updatePackageDetailsAction>;
@@ -60,7 +67,9 @@ export type Actions =
   | ActionFetchPackagesList
   | ActionUpdatePackagesList
   | ActionErrorPackagesList
+  | ActionSwitchToSearchMode
   | ActionSwitchToPackageDetailsMode
+  | ActionEndOfRedirect
   | ActionFetchMultiplePackagesDetails
   | ActionStartMultiplePackagesDetails
   | ActionUpdatePackageDetails

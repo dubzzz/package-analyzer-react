@@ -15,7 +15,8 @@ import {
   UPDATE_PACKAGE_DETAILS,
   ERROR_PACKAGE_DETAILS,
   START_MULTIPLE_PACKAGES_DETAILS,
-  SWITCH_TO_SEARCH_MODE
+  SWITCH_TO_SEARCH_MODE,
+  END_OF_REDIRECT
 } from '../actionTypes';
 
 export enum DependenciesStatus {
@@ -37,13 +38,15 @@ export type PackageDetailsState = {
   };
   packageDetailsMode?: string;
   knownDependencies: KnownDependencies;
+  hasToRedirect: boolean;
 };
 const initialState: PackageDetailsState = {
   suggestions: {
     query: '',
     results: []
   },
-  knownDependencies: {}
+  knownDependencies: {},
+  hasToRedirect: false
 };
 
 export default function(state = initialState, action: Actions) {
@@ -61,13 +64,16 @@ export default function(state = initialState, action: Actions) {
       return { ...state, suggestions: { query, results: [], error } };
     }
     case SWITCH_TO_SEARCH_MODE: {
-      return { ...state, packageDetailsMode: undefined };
+      return { ...state, hasToRedirect: true, packageDetailsMode: undefined };
     }
     case SWITCH_TO_PACKAGE_DETAILS: {
       const {
         payload: { packageName }
       } = action as ActionSwitchToPackageDetailsMode;
-      return { ...state, packageDetailsMode: packageName };
+      return { ...state, hasToRedirect: true, packageDetailsMode: packageName };
+    }
+    case END_OF_REDIRECT: {
+      return { ...state, hasToRedirect: false };
     }
     case START_MULTIPLE_PACKAGES_DETAILS: {
       const {
