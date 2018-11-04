@@ -18,14 +18,16 @@ import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 
-interface Props extends StateProps, DispatchProps {}
+interface Props extends StateProps, DispatchProps {
+  fullSize: boolean;
+}
 type State = { currentQuery: string };
 
 export class PackageSelector extends React.Component<Props, State> {
   static NumResultsPerQuery = 9;
   constructor(props: Props) {
     super(props);
-    this.state = { currentQuery: '' };
+    this.state = { currentQuery: props.query };
   }
   fetchQuery(query: string) {
     if (!this.props.fullSize) {
@@ -76,7 +78,7 @@ export class PackageSelector extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: ReduxState) {
-  return { ...state.packageDetails.suggestions, fullSize: state.packageDetails.packageDetailsMode == null };
+  return { ...state.packageDetails.suggestions };
 }
 type StateProps = ReturnType<typeof mapStateToProps>;
 

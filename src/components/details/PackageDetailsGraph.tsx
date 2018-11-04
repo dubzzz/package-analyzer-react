@@ -10,7 +10,9 @@ import { ForceGraph2D } from 'react-force-graph';
 import { DependenciesStatus } from '../../redux/reducers/packageDetails';
 import { fetchMultiplePackagesDetailsAction } from '../../redux/actions';
 
-interface Props extends StateProps, DispatchProps {}
+interface Props extends StateProps, DispatchProps {
+  packageName: string;
+}
 type State = {
   data?: {
     nodes: { label: string; color: string }[];
@@ -81,6 +83,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     console.log(`Click: `, node);
   }
   render() {
+    console.log(this.props.packageName);
     if (this.props.packageName == null || this.state.data == null) {
       return <div className="package-details no-display" />;
     }
@@ -107,8 +110,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
 
 function mapStateToProps(state: ReduxState) {
   return {
-    knownDependencies: state.packageDetails.knownDependencies,
-    packageName: state.packageDetails.packageDetailsMode
+    knownDependencies: state.packageDetails.knownDependencies
   };
 }
 type StateProps = ReturnType<typeof mapStateToProps>;

@@ -5,14 +5,20 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 
 import './index.css';
-import App from './App';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import SearchPage from './components/SearchPage';
+import DetailsPage from './components/DetailsPage';
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(
   <Provider store={store}>
     <Router>
-      <Route path="/" component={App} />
+      <div id="main">
+        <h1>Package Analyzer</h1>
+        <Route exact path="/" component={SearchPage} />
+        <Route path="/details/:package" component={DetailsPage} />
+      </div>
     </Router>
   </Provider>,
   rootElement
