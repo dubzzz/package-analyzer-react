@@ -11,8 +11,10 @@ export type SearchPackageType = {
     bugs: string;
   };
   author?: {
-    username: string;
-    email: string;
+    name?: string;
+    username?: string;
+    email?: string;
+    url?: string;
   };
   publisher: {
     username: string;
@@ -22,6 +24,7 @@ export type SearchPackageType = {
     username: string;
     email: string;
   }[];
+  keywords?: string[];
 };
 export type SearchScoreType = {
   final: number;
@@ -35,7 +38,6 @@ export type SearchObjectType = {
   package: SearchPackageType;
   score: SearchScoreType;
   searchScore: number;
+  highlight: string;
 };
-export type SearchResponseType = {
-  objects: SearchObjectType[];
-};
+export type SearchResponseType = SearchObjectType[];

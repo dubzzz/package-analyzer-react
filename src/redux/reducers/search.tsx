@@ -29,7 +29,7 @@ export default function(state = initialState, action: Actions): SearchState {
       const {
         payload: { query, searchResults }
       } = action as ActionUpdatePackagesList;
-      return { ...state, state: SearchQueryState.Success, query, results: searchResults.objects };
+      return { ...state, state: SearchQueryState.Success, query, results: searchResults };
     }
     case ERROR_PACKAGES_LIST: {
       const {
