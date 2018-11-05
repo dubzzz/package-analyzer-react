@@ -1,13 +1,13 @@
 {
-  "main.css": "/package-analyzer-react/static/css/main.1bb4f239.chunk.css",
-  "main.js": "/package-analyzer-react/static/js/main.1c2910cd.chunk.js",
-  "main.js.map": "/package-analyzer-react/static/js/main.1c2910cd.chunk.js.map",
-  "static/js/1.f46c9546.chunk.js": "/package-analyzer-react/static/js/1.f46c9546.chunk.js",
-  "static/js/1.f46c9546.chunk.js.map": "/package-analyzer-react/static/js/1.f46c9546.chunk.js.map",
+  "main.css": "/package-analyzer-react/static/css/main.ce564737.chunk.css",
+  "main.js": "/package-analyzer-react/static/js/main.f6e7f464.chunk.js",
+  "main.js.map": "/package-analyzer-react/static/js/main.f6e7f464.chunk.js.map",
+  "static/js/1.22fc27a0.chunk.js": "/package-analyzer-react/static/js/1.22fc27a0.chunk.js",
+  "static/js/1.22fc27a0.chunk.js.map": "/package-analyzer-react/static/js/1.22fc27a0.chunk.js.map",
   "runtime~main.js": "/package-analyzer-react/static/js/runtime~main.137aaa98.js",
   "runtime~main.js.map": "/package-analyzer-react/static/js/runtime~main.137aaa98.js.map",
-  "static/css/main.1bb4f239.chunk.css.map": "/package-analyzer-react/static/css/main.1bb4f239.chunk.css.map",
+  "static/css/main.ce564737.chunk.css.map": "/package-analyzer-react/static/css/main.ce564737.chunk.css.map",
   "index.html": "/package-analyzer-react/index.html",
-  "precache-manifest.86ae6906703a1282d31868aa147f58b7.js": "/package-analyzer-react/precache-manifest.86ae6906703a1282d31868aa147f58b7.js",
+  "precache-manifest.0b072bd8d5fbd276ff787e58997faee8.js": "/package-analyzer-react/precache-manifest.0b072bd8d5fbd276ff787e58997faee8.js",
   "service-worker.js": "/package-analyzer-react/service-worker.js"
 }
