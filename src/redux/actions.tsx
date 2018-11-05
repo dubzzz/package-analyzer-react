@@ -9,15 +9,16 @@ import {
   END_OF_REDIRECT,
   REDIRECT_TO_PAGE
 } from './actionTypes';
-import { PackagesList, Deps } from './sagas/PackageApi';
+import { Deps } from './sagas/PackageApi';
 import { RedirectTo } from './reducers/router';
+import { SearchResponseType } from './sagas/models/searchResponseType';
 
 // search
 export const fetchPackagesListAction = (query: string, numResults: number) => ({
   type: FETCH_PACKAGES_LIST,
   payload: { query, numResults }
 });
-export const updatePackagesListAction = (query: string, searchResults: PackagesList) => ({
+export const updatePackagesListAction = (query: string, searchResults: SearchResponseType) => ({
   type: UPDATE_PACKAGES_LIST,
   payload: { query, searchResults }
 });

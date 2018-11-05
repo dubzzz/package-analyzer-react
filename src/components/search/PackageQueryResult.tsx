@@ -1,17 +1,17 @@
 import React from 'react';
 
 import './PackageQueryResult.css';
-import { PackageSearchResult } from '../../redux/sagas/PackageApi';
 import Card from '@material-ui/core/Card/Card';
 import CardContent from '@material-ui/core/CardContent/CardContent';
 import Typography from '@material-ui/core/Typography/Typography';
 import CardHeader from '@material-ui/core/CardHeader/CardHeader';
 import Avatar from '@material-ui/core/Avatar/Avatar';
+import { SearchPackageType, SearchScoreType } from '../../redux/sagas/models/searchResponseType';
 
 interface Props {
-  package: PackageSearchResult['package'];
-  score: PackageSearchResult['score'];
-  searchScore: PackageSearchResult['searchScore'];
+  package: SearchPackageType;
+  score: SearchScoreType;
+  searchScore: number;
   select: () => void;
 }
 type State = {};
@@ -19,7 +19,7 @@ type State = {};
 class PackageQueryResult extends React.Component<Props, State> {
   render() {
     const packageName = this.props.package.name;
-    const authorName = this.props.package.author ? this.props.package.author.name : 'N.A';
+    const authorName = this.props.package.author ? this.props.package.author.username : 'N.A';
     const scores = this.props.score.detail;
     const adjustedScores = {
       maintenance: Math.round(5 * scores.maintenance),

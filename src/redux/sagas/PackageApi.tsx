@@ -1,3 +1,9 @@
+import { SearchResponseType } from './models/searchResponseType';
+
+// Documentation available of registry.npmjs.org at:
+// https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md
+const rootUrl = 'http://registry.npmjs.org/';
+
 export type Deps = {
   collected: {
     metadata: {
@@ -5,35 +11,6 @@ export type Deps = {
     };
   };
 };
-export type PackageSearchResult = {
-  package: {
-    author?: {
-      name: string;
-      email: string;
-    };
-    date: string;
-    name: string;
-    description: string;
-    version: string;
-    keywords?: string[];
-    links: {
-      bugs?: string;
-      homepage?: string;
-      npm?: string;
-      repository?: string;
-    };
-  };
-  score: {
-    detail: {
-      maintenance: number;
-      popularity: number;
-      quality: number;
-    };
-    final: number;
-  };
-  searchScore: number;
-};
-export type PackagesList = PackageSearchResult[];
 
 export class PackageApi {
   static async deps(packageName: string) {
@@ -46,9 +23,9 @@ export class PackageApi {
     if (query.length === 0) {
       return [];
     }
-    const url = `https://api.npms.io/v2/search/suggestions?q=${encodeURIComponent(query)}&size=${num}`;
+    const url = `${rootUrl}-/v1/search?text=${encodeURIComponent(query)}&size=${num}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`[Status: ${response.status}] ${response.statusText}`);
-    return (await response.json()) as PackagesList;
+    return (await response.json()) as SearchResponseType;
   }
 }

@@ -10,14 +10,15 @@ import {
   errorPackageDetailsAction,
   startMultiplePackagesDetailsAction
 } from '../actions';
-import { PackageApi, PackagesList, Deps } from './PackageApi';
+import { PackageApi, Deps } from './PackageApi';
+import { SearchResponseType } from './models/searchResponseType';
 
 function* fetchPackagesList(action: ActionFetchPackagesList) {
   const {
     payload: { query, numResults }
   } = action;
   try {
-    const searchResults: PackagesList = yield call(() => PackageApi.list(query, numResults));
+    const searchResults: SearchResponseType = yield call(() => PackageApi.list(query, numResults));
     yield put(updatePackagesListAction(query, searchResults));
   } catch (error) {
     yield put(errorPackagesListAction(query, (error as any).message || String(error)));

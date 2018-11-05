@@ -14,9 +14,12 @@ import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 import { PageType } from '../../redux/reducers/router';
+import { SearchQueryState } from '../../redux/reducers/search';
 
-interface Props extends StateProps, DispatchProps {}
+type ComponentProps = {};
 type State = { currentQuery: string };
+
+type Props = ComponentProps & StateProps & DispatchProps;
 
 export class PackageSelector extends React.Component<Props, State> {
   static NumResultsPerQuery = 9;
@@ -37,7 +40,13 @@ export class PackageSelector extends React.Component<Props, State> {
   }
   render() {
     const adornmentIcon =
-      this.state.currentQuery !== this.props.query ? <Http /> : this.props.error == null ? <Done /> : <Error />;
+      this.state.currentQuery !== this.props.query ? (
+        <Http />
+      ) : this.props.state === SearchQueryState.Success ? (
+        <Done />
+      ) : (
+        <Error />
+      );
     return (
       <div id="package-selector">
         <TextField
@@ -50,7 +59,7 @@ export class PackageSelector extends React.Component<Props, State> {
             endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
           }}
         />
-        {this.props.error == null ? (
+        {this.props.state === SearchQueryState.Success ? (
           <QueryResults
             query={this.props.query}
             results={this.props.results}
@@ -64,19 +73,16 @@ export class PackageSelector extends React.Component<Props, State> {
   }
 }
 
-function mapStateToProps(state: ReduxState) {
-  return { ...state.search };
-}
+const mapStateToProps = (state: ReduxState) => ({ ...state.search });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
-function mapDispatchToProps(dispatch: Dispatch<Action>) {
-  return {
-    ...bindActionCreators({ fetchPackagesListAction, redirectToPageAction }, dispatch)
-  };
-}
+const mapDispatchToProps = (dispatch: Dispatch<Action>) => ({
+  ...bindActionCreators({ fetchPackagesListAction, redirectToPageAction }, dispatch)
+});
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
+// TODO: Investigate typings issue on connect
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PackageSelector);
+)(PackageSelector as any);

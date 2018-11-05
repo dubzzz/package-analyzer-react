@@ -1,5 +1,4 @@
 import { Actions, ActionRedirectToPage } from '../actions';
-import { PackageSearchResult } from '../sagas/PackageApi';
 import { REDIRECT_TO_PAGE, END_OF_REDIRECT } from '../actionTypes';
 
 export enum PageType {

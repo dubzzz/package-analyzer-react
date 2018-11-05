@@ -1,30 +1,41 @@
 import { Actions, ActionUpdatePackagesList, ActionErrorPackagesList } from '../actions';
-import { PackageSearchResult } from '../sagas/PackageApi';
 import { UPDATE_PACKAGES_LIST, ERROR_PACKAGES_LIST } from '../actionTypes';
+import { SearchObjectType } from '../sagas/models/searchResponseType';
 
-export type SearchState = {
+export enum SearchQueryState {
+  Success = 'success',
+  Error = 'error'
+}
+export type SearchSuccessState = {
+  state: SearchQueryState.Success;
   query: string;
-  results: PackageSearchResult[];
-  error?: string;
+  results: SearchObjectType[];
 };
+export type SearchErrorState = {
+  state: SearchQueryState.Error;
+  query: string;
+  error: string;
+};
+export type SearchState = SearchSuccessState | SearchErrorState;
 const initialState: SearchState = {
+  state: SearchQueryState.Success,
   query: '',
   results: []
 };
 
-export default function(state = initialState, action: Actions) {
+export default function(state = initialState, action: Actions): SearchState {
   switch (action.type) {
     case UPDATE_PACKAGES_LIST: {
       const {
         payload: { query, searchResults }
       } = action as ActionUpdatePackagesList;
-      return { ...state, query, results: searchResults };
+      return { ...state, state: SearchQueryState.Success, query, results: searchResults.objects };
     }
     case ERROR_PACKAGES_LIST: {
       const {
         payload: { query, error }
       } = action as ActionErrorPackagesList;
-      return { ...state, query, results: [], error };
+      return { ...state, state: SearchQueryState.Error, query, error };
     }
     default:
       return state;
