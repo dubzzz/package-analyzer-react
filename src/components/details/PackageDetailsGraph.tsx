@@ -21,12 +21,15 @@ type State = {
   };
   total: number;
   numLoading: number;
+  width: number;
 };
 
 class PackageDetailsGraph extends React.Component<Props, State> {
+  static DefaultWidth = 800;
+  static DefaultHeight = 600;
   constructor(props: Props) {
     super(props);
-    this.state = this.computeState(this.props);
+    this.state = { ...this.computeState(this.props), width: window.innerWidth };
   }
   computeState(props: Props) {
     const nodes: { label: string; color: string }[] = [];
@@ -78,7 +81,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     return ready ? { data: { nodes, links }, total, numLoading } : { total, numLoading };
   }
   componentWillReceiveProps(nextProps: Props) {
-    const state = this.computeState(nextProps);
+    const state = { ...this.state, ...this.computeState(nextProps) };
     if (JSON.stringify(this.state) !== JSON.stringify(state)) {
       this.setState(state);
     }
@@ -98,19 +101,24 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     }
     const nodes = this.state.data.nodes.map(n => ({ id: n.label, color: n.color }));
     const links = this.state.data.links;
+    const width =
+      this.state.width >= PackageDetailsGraph.DefaultWidth ? PackageDetailsGraph.DefaultWidth : this.state.width;
+    const height = Math.floor((width * PackageDetailsGraph.DefaultHeight) / PackageDetailsGraph.DefaultWidth);
     return (
       <div className="package-details">
         <h2>
           {this.props.packageName} ({this.state.data.nodes.length} packages)
         </h2>
         <div className="package-force-directed">
-          <ForceGraph2D
-            graphData={{ nodes, links }}
-            nodeLabel="id"
-            width={800}
-            height={600}
-            linkDirectionalParticles={1}
-          />
+          <div style={{ textAlign: 'left', display: 'inline-block', width: `${width}px` }}>
+            <ForceGraph2D
+              graphData={{ nodes, links }}
+              nodeLabel="id"
+              width={width}
+              height={height}
+              linkDirectionalParticles={1}
+            />
+          </div>
         </div>
       </div>
     );

@@ -5,5 +5,11 @@
 .package-force-directed {
   display: inline-block;
   width: 800px;
-  text-align: left;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .package-force-directed {
+    width: 100%;
+  }
 }
