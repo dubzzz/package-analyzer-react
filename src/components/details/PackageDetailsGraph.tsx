@@ -87,9 +87,6 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     }
   }
   render() {
-    if (this.props.packageName == null) {
-      return <Fragment />;
-    }
     if (this.state.data == null) {
       return (
         <Fragment>
