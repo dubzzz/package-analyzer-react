@@ -5,6 +5,7 @@ import { ReduxState } from '../../redux/reducers';
 import { Redirect, withRouter } from 'react-router-dom';
 import { Dispatch, Action, bindActionCreators } from 'redux';
 import { endOfRedirectAction } from '../../redux/actions';
+import { PageType, RedirectToDetails } from '../../redux/reducers/router';
 
 interface Props extends StateProps, DispatchProps {}
 type State = { endOfRedirectDetected: boolean };
@@ -23,10 +24,14 @@ export class RouteRedirect extends React.Component<Props, State> {
     }
   }
   render() {
-    if (!this.props.packageDetails.hasToRedirect || this.state.endOfRedirectDetected) return <Fragment />;
-    const packageName = this.props.packageDetails.packageDetailsMode;
-    if (packageName == null) return <Redirect to="/" />;
-    return <Redirect to={`/details/${packageName}`} />;
+    if (!this.props.router.hasToRedirect || this.state.endOfRedirectDetected) return <Fragment />;
+    switch (this.props.router.page) {
+      case PageType.SearchPage:
+        return <Redirect to="/" />;
+      case PageType.DetailsPage:
+        const packageName = this.props.router.packageName;
+        return <Redirect to={`/details/${packageName}`} />;
+    }
   }
 }
 

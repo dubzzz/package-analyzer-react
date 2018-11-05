@@ -6,17 +6,14 @@ import { ReduxState } from '../../redux/reducers';
 import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import TextField from '@material-ui/core/TextField';
-import {
-  fetchPackagesListAction,
-  switchToPackageDetailsModeAction,
-  switchToSearchModeAction
-} from '../../redux/actions';
+import { fetchPackagesListAction, redirectToPageAction } from '../../redux/actions';
 import QueryError from './QueryError';
 import QueryResults from './QueryResults';
 import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
 import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
+import { PageType } from '../../redux/reducers/router';
 
 interface Props extends StateProps, DispatchProps {}
 type State = { currentQuery: string };
@@ -36,7 +33,7 @@ export class PackageSelector extends React.Component<Props, State> {
     this.fetchQuery(query);
   }
   openPackage(packageName: string) {
-    this.props.switchToPackageDetailsModeAction(packageName);
+    this.props.redirectToPageAction({ page: PageType.DetailsPage, packageName });
   }
   render() {
     const adornmentIcon =
@@ -68,13 +65,13 @@ export class PackageSelector extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: ReduxState) {
-  return { ...state.packageDetails.suggestions };
+  return { ...state.search };
 }
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 function mapDispatchToProps(dispatch: Dispatch<Action>) {
   return {
-    ...bindActionCreators({ fetchPackagesListAction, switchToPackageDetailsModeAction }, dispatch)
+    ...bindActionCreators({ fetchPackagesListAction, redirectToPageAction }, dispatch)
   };
 }
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;

@@ -7,9 +7,9 @@ import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import { ForceGraph2D } from 'react-force-graph';
 
-import { DependenciesStatus } from '../../redux/reducers/packageDetails';
 import { fetchMultiplePackagesDetailsAction } from '../../redux/actions';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
+import { DependenciesStatus } from '../../redux/reducers/details';
 
 interface Props extends StateProps, DispatchProps {
   packageName: string;
@@ -124,7 +124,7 @@ class PackageDetailsGraph extends React.Component<Props, State> {
 
 function mapStateToProps(state: ReduxState) {
   return {
-    knownDependencies: state.packageDetails.knownDependencies
+    knownDependencies: state.details.knownDependencies
   };
 }
 type StateProps = ReturnType<typeof mapStateToProps>;
