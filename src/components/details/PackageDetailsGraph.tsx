@@ -11,9 +11,9 @@ import { fetchMultiplePackagesDetailsAction } from '../../redux/actions';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import { DependenciesStatus } from '../../redux/reducers/details';
 
-interface Props extends StateProps, DispatchProps {
+type ComponentProps = {
   packageName: string;
-}
+};
 type State = {
   data?: {
     nodes: { label: string; color: string }[];
@@ -23,6 +23,8 @@ type State = {
   numLoading: number;
   width: number;
 };
+
+type Props = ComponentProps & StateProps & DispatchProps;
 
 class PackageDetailsGraph extends React.Component<Props, State> {
   static DefaultWidth = 800;
