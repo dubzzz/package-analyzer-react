@@ -43,10 +43,11 @@ class PackageDetailsGraph extends React.Component<Props, State> {
     let numLoading = 0;
     const antiDuplicates: { [packageName: string]: true } =
       props.packageName != null ? { [props.packageName]: true } : {};
-    const unvisited = props.packageName != null ? [props.packageName] : [];
+    const unvisited: { name: string; depth: number }[] =
+      props.packageName != null ? [{ name: props.packageName, depth: 0 }] : [];
     while (unvisited.length > 0) {
       ++total;
-      const currentPackage = unvisited.pop()!;
+      const { name: currentPackage, depth } = unvisited.pop()!;
       const deps = props.knownDependencies[currentPackage];
       if (deps == null) {
         nodes.push({ color: 'black', label: currentPackage });
@@ -65,13 +66,15 @@ class PackageDetailsGraph extends React.Component<Props, State> {
           break;
         case DependenciesStatus.Success:
         default:
-          nodes.push({ color: 'blue', label: currentPackage });
+          const f = Math.min(64 * depth, 255 - 64);
+          const fstring = f < 16 ? `0${f.toString(16)}` : f.toString(16);
+          nodes.push({ color: `#${fstring}${fstring}ff`, label: currentPackage });
           break;
       }
       for (const requirement of deps.dependencies) {
         links.push({ target: currentPackage, source: requirement });
         if (!antiDuplicates[requirement]) {
-          unvisited.push(requirement);
+          unvisited.push({ name: requirement, depth: depth + 1 });
           antiDuplicates[requirement] = true;
         }
       }
