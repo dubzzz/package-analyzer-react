@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { connect } from 'react-redux';
 
 import './PackageSelector.css';
@@ -17,60 +17,48 @@ import { PageType } from '../../redux/reducers/router';
 import { SearchQueryState } from '../../redux/reducers/search';
 
 type ComponentProps = {};
-type State = { currentQuery: string };
-
 type Props = ComponentProps & StateProps & DispatchProps;
 
-export class PackageSelector extends React.Component<Props, State> {
-  static NumResultsPerQuery = 9;
-  constructor(props: Props) {
-    super(props);
-    this.state = { currentQuery: props.query };
-  }
-  fetchQuery(query: string) {
-    this.props.fetchPackagesListAction(query, PackageSelector.NumResultsPerQuery);
-  }
-  fetch(event: ChangeEvent<HTMLInputElement>) {
-    const query = event.currentTarget.value;
-    this.setState({ currentQuery: query });
-    this.fetchQuery(query);
-  }
-  openPackage(packageName: string) {
-    this.props.redirectToPageAction({ page: PageType.DetailsPage, packageName });
-  }
-  render() {
-    const adornmentIcon =
-      this.state.currentQuery !== this.props.query ? (
-        <Http />
-      ) : this.props.state === SearchQueryState.Success ? (
-        <Done />
-      ) : (
-        <Error />
-      );
-    return (
-      <div id="package-selector">
-        <TextField
-          id="package-name-input"
-          label="Package Name"
-          variant="outlined"
-          onChange={(event: ChangeEvent<HTMLInputElement>) => this.fetch(event)}
-          value={this.state.currentQuery}
-          InputProps={{
-            endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
+const NumResultsPerQuery = 9;
+
+function PackageSelector(props: Props) {
+  const [currentQuery, setCurrentQuery] = useState(props.query);
+  const adornmentIcon =
+    currentQuery !== props.query ? <Http /> : props.state === SearchQueryState.Success ? <Done /> : <Error />;
+  return (
+    <div id="package-selector">
+      <TextField
+        id="package-name-input"
+        label="Package Name"
+        variant="outlined"
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          const query = event.currentTarget.value;
+          setCurrentQuery(query);
+          props.fetchPackagesListAction(query, NumResultsPerQuery);
+        }}
+        value={currentQuery}
+        InputProps={{
+          endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
+        }}
+      />
+      {props.state === SearchQueryState.Success ? (
+        <QueryResults
+          query={props.query}
+          results={props.results}
+          selectPackage={(packageName: string) => {
+            props.redirectToPageAction({ page: PageType.DetailsPage, packageName });
           }}
         />
-        {this.props.state === SearchQueryState.Success ? (
-          <QueryResults
-            query={this.props.query}
-            results={this.props.results}
-            selectPackage={(packageName: string) => this.openPackage(packageName)}
-          />
-        ) : (
-          <QueryError error={this.props.error} retry={() => this.fetchQuery(this.state.currentQuery)} />
-        )}
-      </div>
-    );
-  }
+      ) : (
+        <QueryError
+          error={props.error}
+          retry={() => {
+            props.fetchPackagesListAction(currentQuery, NumResultsPerQuery);
+          }}
+        />
+      )}
+    </div>
+  );
 }
 
 const mapStateToProps = (state: ReduxState) => ({ ...state.search });
