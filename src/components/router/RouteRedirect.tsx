@@ -1,37 +1,34 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { ReduxState } from '../../redux/reducers';
 import { Redirect, withRouter } from 'react-router-dom';
 import { Dispatch, Action, bindActionCreators } from 'redux';
 import { endOfRedirectAction } from '../../redux/actions';
-import { PageType, RedirectToDetails } from '../../redux/reducers/router';
+import { PageType } from '../../redux/reducers/router';
 
 interface Props extends StateProps, DispatchProps {}
-type State = { endOfRedirectDetected: boolean };
 
-export class RouteRedirect extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { endOfRedirectDetected: false };
-  }
-  componentWillReceiveProps(nextProps: any) {
-    if (nextProps.location !== (this.props as any).location) {
-      this.props.endOfRedirectAction();
-      this.setState({ endOfRedirectDetected: true });
+function RouteRedirect(props: Props) {
+  const [endOfRedirect, setEndOfRedirect] = useState(false);
+  const [location, setLocation] = useState<string | null>(null);
+  useEffect(() => {
+    const newLocation = (props as any).location;
+    if (location !== newLocation) {
+      props.endOfRedirectAction();
+      setEndOfRedirect(true);
     } else {
-      this.setState({ endOfRedirectDetected: false });
+      setEndOfRedirect(false);
     }
-  }
-  render() {
-    if (!this.props.router.hasToRedirect || this.state.endOfRedirectDetected) return <Fragment />;
-    switch (this.props.router.page) {
-      case PageType.SearchPage:
-        return <Redirect to="/" />;
-      case PageType.DetailsPage:
-        const packageName = this.props.router.packageName;
-        return <Redirect to={`/details/${packageName}`} />;
-    }
+    setLocation(newLocation);
+  });
+  if (!props.router.hasToRedirect || endOfRedirect) return <Fragment />;
+  switch (props.router.page) {
+    case PageType.SearchPage:
+      return <Redirect to="/" />;
+    case PageType.DetailsPage:
+      const packageName = props.router.packageName;
+      return <Redirect to={`/details/${packageName}`} />;
   }
 }
 
