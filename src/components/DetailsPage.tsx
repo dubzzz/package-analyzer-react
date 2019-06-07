@@ -6,10 +6,14 @@ import FloatingMenu from './router/FloatingMenu';
 type MatchType = { params: { package: string } };
 type PropsType = { match: MatchType };
 
-export default (props: PropsType) => (
-  <Fragment>
-    <RouteRedirect />
-    <FloatingMenu />
-    <PackageDetailsGraph packageName={props.match.params.package} />
-  </Fragment>
-);
+function DetailsPage(props: PropsType) {
+  return (
+    <Fragment>
+      <RouteRedirect />
+      <FloatingMenu />
+      <PackageDetailsGraph packageName={props.match.params.package} />
+    </Fragment>
+  );
+}
+
+export default DetailsPage;

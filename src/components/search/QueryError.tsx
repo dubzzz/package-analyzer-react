@@ -8,19 +8,16 @@ interface Props {
   error: string;
   retry: () => void;
 }
-type State = {};
 
-class QueryError extends React.Component<Props, State> {
-  render() {
-    return (
-      <div className="query-error">
-        <p>Query failed with error: {this.props.error}</p>
-        <Button variant="contained" onClick={() => this.props.retry()}>
-          Retry <Refresh />
-        </Button>
-      </div>
-    );
-  }
+function QueryError(props: Props) {
+  return (
+    <div className="query-error">
+      <p>Query failed with error: {props.error}</p>
+      <Button variant="contained" onClick={() => props.retry()}>
+        Retry <Refresh />
+      </Button>
+    </div>
+  );
 }
 
 export default QueryError;
