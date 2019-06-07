@@ -7,23 +7,19 @@ import { Dispatch, bindActionCreators, Action } from 'redux';
 
 import { redirectToPageAction } from '../../redux/actions';
 import { Fab } from '@material-ui/core';
-import { Button } from '@material-ui/core';
 import Search from '@material-ui/icons/Search';
 import { PageType } from '../../redux/reducers/router';
 
 interface Props extends StateProps, DispatchProps {}
-type State = {};
 
-class FloatingMenu extends React.Component<Props, State> {
-  render() {
-    return (
-      <div id="floating-menu">
-        <Fab color="primary" onClick={() => this.props.redirectToPageAction({ page: PageType.SearchPage })}>
-          <Search />
-        </Fab>
-      </div>
-    );
-  }
+function FloatingMenu(props: Props) {
+  return (
+    <div id="floating-menu">
+      <Fab color="primary" onClick={() => props.redirectToPageAction({ page: PageType.SearchPage })}>
+        <Search />
+      </Fab>
+    </div>
+  );
 }
 
 const mapStateToProps = (state: ReduxState) => ({});
