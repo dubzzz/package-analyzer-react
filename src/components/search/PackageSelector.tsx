@@ -15,7 +15,8 @@ import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 import { PageType } from '../../redux/reducers/router';
 import { PackageApi } from '../../redux/sagas/PackageApi';
-import { useSearchQuery, SearchState } from '../../hooks/SearchQuery';
+import { useSearchQuery } from '../../hooks/SearchQuery';
+import { LoadState } from '../../models/LoadState';
 
 type Props = {} & StateProps & DispatchProps;
 
@@ -26,8 +27,7 @@ function PackageSelector(props: Props) {
     PackageApi.list(q, NumResultsPerQuery)
   );
 
-  const adornmentIcon =
-    status === SearchState.OnGoing ? <Http /> : status === SearchState.Success ? <Done /> : <Error />;
+  const adornmentIcon = status === LoadState.OnGoing ? <Http /> : status === LoadState.Success ? <Done /> : <Error />;
   return (
     <div id="package-selector">
       <TextField
@@ -40,7 +40,7 @@ function PackageSelector(props: Props) {
           endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
         }}
       />
-      {lastSearch.state === SearchState.Success ? (
+      {lastSearch.state === LoadState.Success ? (
         <QueryResults
           query={lastSearch.query}
           results={lastSearch.results}

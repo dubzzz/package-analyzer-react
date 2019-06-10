@@ -1,19 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-
-export enum SearchState {
-  Success = 'success',
-  Error = 'error',
-  OnGoing = 'ongoing'
-}
+import { LoadState } from '../models/LoadState';
 
 type SuccessSearchResult<TR> = {
   query: string;
-  state: SearchState.Success;
+  state: LoadState.Success;
   results: TR;
 };
 type ErrorSearchResult = {
   query: string;
-  state: SearchState.Error;
+  state: LoadState.Error;
   error: string;
 };
 type SearchResult<TR> = SuccessSearchResult<TR> | ErrorSearchResult;
@@ -24,30 +19,30 @@ export function useSearchQuery<TR>(
   queryToResults: (q: string) => Promise<TR>
 ) {
   const [query, setQuery] = useState(defaultQuery);
-  const [status, setStatus] = useState(SearchState.Success);
+  const [status, setStatus] = useState(LoadState.Success);
   const refQuery = useRef(query);
 
   const [lastSearch, setLastSearch] = useState<SearchResult<TR>>({
     query: defaultQuery,
-    state: SearchState.Success,
+    state: LoadState.Success,
     results: defaultResults
   });
 
   const runQuery = () => {
     const ongoingQuery = refQuery.current;
-    setStatus(SearchState.OnGoing);
+    setStatus(LoadState.OnGoing);
     queryToResults(ongoingQuery).then(
       results => {
         if (refQuery.current !== ongoingQuery) return;
-        setStatus(SearchState.Success);
-        setLastSearch({ query: ongoingQuery, state: SearchState.Success, results });
+        setStatus(LoadState.Success);
+        setLastSearch({ query: ongoingQuery, state: LoadState.Success, results });
       },
       error => {
         if (refQuery.current !== ongoingQuery) return;
-        setStatus(SearchState.Error);
+        setStatus(LoadState.Error);
         setLastSearch({
           query: ongoingQuery,
-          state: SearchState.Error,
+          state: LoadState.Error,
           error: (error as any).message || String(error)
         });
       }
