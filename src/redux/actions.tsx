@@ -1,7 +1,4 @@
 import {
-  FETCH_PACKAGES_LIST,
-  UPDATE_PACKAGES_LIST,
-  ERROR_PACKAGES_LIST,
   UPDATE_PACKAGE_DETAILS,
   ERROR_PACKAGE_DETAILS,
   FETCH_MULTIPLE_PACKAGES_DETAILS,
@@ -11,21 +8,6 @@ import {
 } from './actionTypes';
 import { Deps } from './sagas/PackageApi';
 import { RedirectTo } from './reducers/router';
-import { SearchResponseType } from './sagas/models/searchResponseType';
-
-// search
-export const fetchPackagesListAction = (query: string, numResults: number) => ({
-  type: FETCH_PACKAGES_LIST,
-  payload: { query, numResults }
-});
-export const updatePackagesListAction = (query: string, searchResults: SearchResponseType) => ({
-  type: UPDATE_PACKAGES_LIST,
-  payload: { query, searchResults }
-});
-export const errorPackagesListAction = (query: string, error: string) => ({
-  type: ERROR_PACKAGES_LIST,
-  payload: { query, error }
-});
 
 // details
 export const fetchMultiplePackagesDetailsAction = (packages: string[]) => ({
@@ -55,9 +37,6 @@ export const endOfRedirectAction = () => ({
   payload: {}
 });
 
-export type ActionFetchPackagesList = ReturnType<typeof fetchPackagesListAction>;
-export type ActionUpdatePackagesList = ReturnType<typeof updatePackagesListAction>;
-export type ActionErrorPackagesList = ReturnType<typeof errorPackagesListAction>;
 export type ActionFetchMultiplePackagesDetails = ReturnType<typeof fetchMultiplePackagesDetailsAction>;
 export type ActionStartMultiplePackagesDetails = ReturnType<typeof startMultiplePackagesDetailsAction>;
 export type ActionUpdatePackageDetails = ReturnType<typeof updatePackageDetailsAction>;
@@ -65,9 +44,6 @@ export type ActionErrorPackageDetails = ReturnType<typeof errorPackageDetailsAct
 export type ActionRedirectToPage = ReturnType<typeof redirectToPageAction>;
 export type ActionEndOfRedirect = ReturnType<typeof endOfRedirectAction>;
 export type Actions =
-  | ActionFetchPackagesList
-  | ActionUpdatePackagesList
-  | ActionErrorPackagesList
   | ActionFetchMultiplePackagesDetails
   | ActionStartMultiplePackagesDetails
   | ActionUpdatePackageDetails
