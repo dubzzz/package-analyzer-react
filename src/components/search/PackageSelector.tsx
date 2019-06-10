@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, useEffect, useRef } from 'react';
+import React, { ChangeEvent } from 'react';
 import { connect } from 'react-redux';
 
 import './PackageSelector.css';
@@ -14,90 +14,43 @@ import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 import { PageType } from '../../redux/reducers/router';
-import { SearchObjectType } from '../../redux/sagas/models/searchResponseType';
 import { PackageApi } from '../../redux/sagas/PackageApi';
+import { useSearchQuery, SearchState } from '../../hooks/SearchQuery';
 
 type Props = {} & StateProps & DispatchProps;
 
 const NumResultsPerQuery = 9;
 
-enum QueryState {
-  Success = 'success',
-  Error = 'error',
-  OnGoing = 'ongoing'
-}
-
-type SuccessSearchResult = {
-  query: string;
-  state: QueryState.Success;
-  results: SearchObjectType[];
-};
-type ErrorSearchResult = {
-  query: string;
-  state: QueryState.Error;
-  error: string;
-};
-type SearchResult = SuccessSearchResult | ErrorSearchResult;
-
 function PackageSelector(props: Props) {
-  // Live data for the on-going search
-  const [liveQuery, setLiveQuery] = useState('');
-  const [liveStatus, setLiveStatus] = useState(QueryState.Success);
-  // Data coming from the last successful/failed search
-  const [search, setSearch] = useState<SearchResult>({ query: '', state: QueryState.Success, results: [] });
-
-  const refQuery = useRef(liveQuery);
-
-  const runQuery = () => {
-    const query = refQuery.current;
-    setLiveStatus(QueryState.OnGoing);
-    PackageApi.list(query, NumResultsPerQuery).then(
-      results => {
-        if (refQuery.current !== query) return;
-        setLiveStatus(QueryState.Success);
-        setSearch({ query, state: QueryState.Success, results });
-      },
-      error => {
-        if (refQuery.current !== query) return;
-        setLiveStatus(QueryState.Error);
-        setSearch({ query, state: QueryState.Error, error: (error as any).message || String(error) });
-      }
-    );
-  };
-  useEffect(
-    () => {
-      refQuery.current = liveQuery;
-      runQuery();
-    },
-    [liveQuery]
+  const { query, status, setQuery, runQuery, lastSearch } = useSearchQuery('', [], (q: string) =>
+    PackageApi.list(q, NumResultsPerQuery)
   );
 
   const adornmentIcon =
-    liveStatus === QueryState.OnGoing ? <Http /> : liveStatus === QueryState.Success ? <Done /> : <Error />;
+    status === SearchState.OnGoing ? <Http /> : status === SearchState.Success ? <Done /> : <Error />;
   return (
     <div id="package-selector">
       <TextField
         id="package-name-input"
         label="Package Name"
         variant="outlined"
-        onChange={(event: ChangeEvent<HTMLInputElement>) => setLiveQuery(event.currentTarget.value)}
-        value={liveQuery}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => setQuery(event.currentTarget.value)}
+        value={query}
         InputProps={{
           endAdornment: <InputAdornment position="start">{adornmentIcon}</InputAdornment>
         }}
       />
-      {search.state === QueryState.Success ? (
+      {lastSearch.state === SearchState.Success ? (
         <QueryResults
-          query={search.query}
-          results={search.results}
+          query={lastSearch.query}
+          results={lastSearch.results}
           selectPackage={(packageName: string) => {
             props.redirectToPageAction({ page: PageType.DetailsPage, packageName });
           }}
         />
       ) : (
-        <QueryError error={search.error} retry={() => runQuery()} />
+        <QueryError error={lastSearch.error} retry={() => runQuery()} />
       )}
-      <QueryError error={'Fake Error to replay'} retry={() => runQuery()} />
     </div>
   );
 }
