@@ -20,49 +20,49 @@ export function useDependencyGraph(packageName: string): DependencyGraph {
   const { getPackageDetails } = usePackageDetails();
   const [incrementalGraph, setIncrementalGraph] = useState(buildInitialState(packageName));
 
+  const incrementalGraphBuild = (currentGraph: typeof incrementalGraph) => {
+    if (currentGraph.ongoingNodes.length === 0) return;
+
+    const nodes = [...currentGraph.nodes];
+    const links = [...currentGraph.links];
+    const ongoingNodes = [];
+
+    const antiDuplicates = new Set([...currentGraph.nodes, ...currentGraph.ongoingNodes].map(n => n.label));
+    const unvisited: { label: string; depth: number }[] = [...currentGraph.ongoingNodes];
+    while (unvisited.length > 0) {
+      const { label: currentPackage, depth } = unvisited.pop()!;
+      const packageDetails = getPackageDetails(currentPackage);
+      const node = { label: currentPackage, depth, status: packageDetails.status };
+      switch (packageDetails.status) {
+        case LoadState.Error:
+          nodes.push(node);
+          break;
+        case LoadState.OnGoing:
+          ongoingNodes.push(node);
+          break;
+        case LoadState.Success:
+          nodes.push(node);
+          for (const requirement of packageDetails.package.dependencies) {
+            links.push({ target: currentPackage, source: requirement });
+            if (!antiDuplicates.has(requirement)) {
+              unvisited.push({ label: requirement, depth: depth + 1 });
+              antiDuplicates.add(requirement);
+            }
+          }
+          break;
+      }
+    }
+    setIncrementalGraph({ nodes, ongoingNodes, links });
+  };
+
   useEffect(
     () => {
-      setIncrementalGraph(buildInitialState(packageName));
+      const graph = buildInitialState(packageName);
+      incrementalGraphBuild(graph);
     },
     [packageName]
   );
-  useEffect(
-    () => {
-      if (incrementalGraph.ongoingNodes.length === 0) return;
-
-      const nodes = [...incrementalGraph.nodes];
-      const links = [...incrementalGraph.links];
-      const ongoingNodes = [];
-
-      const antiDuplicates = new Set([...incrementalGraph.nodes, ...incrementalGraph.ongoingNodes].map(n => n.label));
-      const unvisited: { label: string; depth: number }[] = [...incrementalGraph.ongoingNodes];
-      while (unvisited.length > 0) {
-        const { label: currentPackage, depth } = unvisited.pop()!;
-        const packageDetails = getPackageDetails(currentPackage);
-        const node = { label: currentPackage, depth, status: packageDetails.status };
-        switch (packageDetails.status) {
-          case LoadState.Error:
-            nodes.push(node);
-            break;
-          case LoadState.OnGoing:
-            ongoingNodes.push(node);
-            break;
-          case LoadState.Success:
-            nodes.push(node);
-            for (const requirement of packageDetails.package.dependencies) {
-              links.push({ target: currentPackage, source: requirement });
-              if (!antiDuplicates.has(requirement)) {
-                unvisited.push({ label: requirement, depth: depth + 1 });
-                antiDuplicates.add(requirement);
-              }
-            }
-            break;
-        }
-      }
-      setIncrementalGraph({ nodes, ongoingNodes, links });
-    },
-    [getPackageDetails]
-  );
+  useEffect(() => incrementalGraphBuild(incrementalGraph), [getPackageDetails]);
 
   return {
     graph: { nodes: incrementalGraph.nodes.concat(incrementalGraph.ongoingNodes), links: incrementalGraph.links },
