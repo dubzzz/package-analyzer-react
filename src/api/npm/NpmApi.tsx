@@ -1,31 +1,23 @@
-import { SearchResponseType } from './models/searchResponseType';
+import { SearchPackageEntry, PackageDetails } from './models';
 
 // Documentation available at:
 // https://api-docs.npms.io/
 const apiUrl = 'https://api.npms.io';
 
-export type Deps = {
-  collected: {
-    metadata: {
-      dependencies?: { [packageName: string]: string };
-    };
-  };
-};
-
-export class PackageApi {
-  static async deps(packageName: string) {
+export class NpmApi {
+  static async deps(packageName: string): Promise<PackageDetails> {
     const url = `${apiUrl}/v2/package/${encodeURIComponent(packageName)}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`[Status: ${response.status}] ${response.statusText}`);
-    return (await response.json()) as Deps;
+    return await response.json();
   }
-  static async list(query: string, num: number) {
+  static async list(query: string, num: number): Promise<SearchPackageEntry[]> {
     if (query.length === 0) {
       return [];
     }
     const url = `${apiUrl}/v2/search/suggestions?q=${encodeURIComponent(query)}&size=${num}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`[Status: ${response.status}] ${response.statusText}`);
-    return (await response.json()) as SearchResponseType;
+    return await response.json();
   }
 }

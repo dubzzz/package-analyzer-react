@@ -1,4 +1,11 @@
-export type SearchPackageType = {
+export type PackageDetails = {
+  collected: {
+    metadata: {
+      dependencies?: { [packageName: string]: string };
+    };
+  };
+};
+export type PackageSummary = {
   name: string;
   scope: string;
   version: string;
@@ -26,7 +33,7 @@ export type SearchPackageType = {
   }[];
   keywords?: string[];
 };
-export type SearchScoreType = {
+export type SearchScore = {
   final: number;
   detail: {
     quality: number;
@@ -34,10 +41,9 @@ export type SearchScoreType = {
     maintenance: number;
   };
 };
-export type SearchObjectType = {
-  package: SearchPackageType;
-  score: SearchScoreType;
+export type SearchPackageEntry = {
+  package: PackageSummary;
+  score: SearchScore;
   searchScore: number;
   highlight: string;
 };
-export type SearchResponseType = SearchObjectType[];

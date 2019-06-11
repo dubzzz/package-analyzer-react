@@ -14,7 +14,7 @@ import Http from '@material-ui/icons/Http';
 import Error from '@material-ui/icons/Error';
 import Done from '@material-ui/icons/Done';
 import { PageType } from '../../redux/reducers/router';
-import { PackageApi } from '../../redux/sagas/PackageApi';
+import { NpmApi } from '../../api/npm/NpmApi';
 import { useSearchQuery } from '../../hooks/SearchQuery';
 import { LoadState } from '../../models/LoadState';
 
@@ -24,7 +24,7 @@ const NumResultsPerQuery = 9;
 
 function PackageSelector(props: Props) {
   const { query, status, setQuery, runQuery, lastSearch } = useSearchQuery('', [], (q: string) =>
-    PackageApi.list(q, NumResultsPerQuery)
+    NpmApi.list(q, NumResultsPerQuery)
   );
 
   const adornmentIcon = status === LoadState.OnGoing ? <Http /> : status === LoadState.Success ? <Done /> : <Error />;

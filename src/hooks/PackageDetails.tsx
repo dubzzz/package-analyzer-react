@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
 import { LoadState } from '../models/LoadState';
-import { PackageApi } from '../redux/sagas/PackageApi';
+import { NpmApi } from '../api/npm/NpmApi';
 
 type PackageDetails = {
   dependencies: string[];
@@ -27,7 +27,7 @@ export function PackageDetailsProvider<TProps>(props: TProps) {
     const newPackageDetails: PackageDetailsWithStatus = { status: LoadState.OnGoing };
     setPackages(p => ({ ...p, [packageName]: newPackageDetails }));
 
-    PackageApi.deps(packageName).then(
+    NpmApi.deps(packageName).then(
       r => {
         const dependencies = Object.keys(r.collected.metadata.dependencies || {});
         setPackages(p => ({ ...p, [packageName]: { status: LoadState.Success, package: { dependencies } } }));

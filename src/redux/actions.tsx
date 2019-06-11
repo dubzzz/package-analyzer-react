@@ -1,5 +1,4 @@
 import { END_OF_REDIRECT, REDIRECT_TO_PAGE } from './actionTypes';
-import { Deps } from './sagas/PackageApi';
 import { RedirectTo } from './reducers/router';
 
 // router

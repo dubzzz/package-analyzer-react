@@ -2,11 +2,11 @@ import React from 'react';
 
 import './QueryResults.css';
 import PackageQueryResult from './PackageQueryResult';
-import { SearchObjectType } from '../../redux/sagas/models/searchResponseType';
+import { SearchPackageEntry } from '../../api/npm/models';
 
 interface Props {
   query: string;
-  results: SearchObjectType[];
+  results: SearchPackageEntry[];
   selectPackage: (packageName: string) => void;
 }
 

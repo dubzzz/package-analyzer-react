@@ -6,11 +6,11 @@ import CardContent from '@material-ui/core/CardContent/CardContent';
 import Typography from '@material-ui/core/Typography/Typography';
 import CardHeader from '@material-ui/core/CardHeader/CardHeader';
 import Avatar from '@material-ui/core/Avatar/Avatar';
-import { SearchPackageType, SearchScoreType } from '../../redux/sagas/models/searchResponseType';
+import { PackageSummary, SearchScore } from '../../api/npm/models';
 
 interface Props {
-  package: SearchPackageType;
-  score: SearchScoreType;
+  package: PackageSummary;
+  score: SearchScore;
   searchScore: number;
   select: () => void;
 }
