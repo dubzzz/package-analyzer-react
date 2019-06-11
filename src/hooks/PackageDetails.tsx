@@ -20,37 +20,23 @@ const PackageDetailsContext = createContext(defaultPackageDetails);
 
 export function PackageDetailsProvider<TProps>(props: TProps) {
   const [packages, setPackages] = useState<AllPackageDetails>({});
-  const refPackages = useRef(packages);
-  const loadingPackages = useRef<{ [packageName: string]: true }>({});
-
-  useEffect(
-    () => {
-      refPackages.current = packages;
-    },
-    [packages]
-  );
 
   const getPackageDetails = (packageName: string) => {
-    const packageDetails = packages[packageName];
-    if (packageDetails) return packageDetails;
+    if (packages[packageName]) return packages[packageName];
 
     const newPackageDetails: PackageDetailsWithStatus = { status: LoadState.OnGoing };
-    if (loadingPackages.current[packageName]) return newPackageDetails;
+    setPackages(p => ({ ...p, [packageName]: newPackageDetails }));
 
-    loadingPackages.current = { ...loadingPackages.current, [packageName]: true };
-    setPackages({ ...packages, [packageName]: newPackageDetails });
     PackageApi.deps(packageName).then(
       r => {
         const dependencies = Object.keys(r.collected.metadata.dependencies || {});
-        setPackages({
-          ...refPackages.current,
-          [packageName]: { status: LoadState.Success, package: { dependencies } }
-        });
+        setPackages(p => ({ ...p, [packageName]: { status: LoadState.Success, package: { dependencies } } }));
       },
       _err => {
-        setPackages({ ...refPackages.current, [packageName]: { status: LoadState.Error } });
+        setPackages(p => ({ ...p, [packageName]: { status: LoadState.Error } }));
       }
     );
+
     return newPackageDetails;
   };
 
