@@ -21,6 +21,7 @@ const PackageDetailsContext = createContext(defaultPackageDetails);
 export function PackageDetailsProvider<TProps>(props: TProps) {
   const [packages, setPackages] = useState<AllPackageDetails>({});
   const refPackages = useRef(packages);
+  const loadingPackages = useRef<{ [packageName: string]: true }>({});
 
   useEffect(
     () => {
@@ -34,6 +35,9 @@ export function PackageDetailsProvider<TProps>(props: TProps) {
     if (packageDetails) return packageDetails;
 
     const newPackageDetails: PackageDetailsWithStatus = { status: LoadState.OnGoing };
+    if (loadingPackages.current[packageName]) return newPackageDetails;
+
+    loadingPackages.current = { ...loadingPackages.current, [packageName]: true };
     setPackages({ ...packages, [packageName]: newPackageDetails });
     PackageApi.deps(packageName).then(
       r => {
