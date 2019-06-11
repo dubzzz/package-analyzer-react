@@ -2,19 +2,6 @@ import React, { createContext, useContext, useState, useRef, useEffect } from 'r
 import { LoadState } from '../models/LoadState';
 import { NpmApi } from '../api/npm/NpmApi';
 
-type PackageDetails = {
-  dependencies: string[];
-};
-export type PackageDetailsWithStatus =
-  | { status: LoadState.Success; package: PackageDetails }
-  | { status: LoadState.Error }
-  | { status: LoadState.OnGoing };
-type AllPackageDetails = {
-  [packageName: string]: PackageDetailsWithStatus;
-};
-type PackageDetailsContextType = {
-  getPackageDetails(packageName: string): PackageDetailsWithStatus;
-};
 const defaultPackageDetails = {} as PackageDetailsContextType;
 const PackageDetailsContext = createContext(defaultPackageDetails);
 
@@ -50,3 +37,20 @@ export function usePackageDetails() {
   }
   return context;
 }
+
+export type PackageDetails = {
+  dependencies: string[];
+};
+
+export type PackageDetailsWithStatus =
+  | { status: LoadState.Success; package: PackageDetails }
+  | { status: LoadState.Error }
+  | { status: LoadState.OnGoing };
+
+export type AllPackageDetails = {
+  [packageName: string]: PackageDetailsWithStatus;
+};
+
+export type PackageDetailsContextType = {
+  getPackageDetails(packageName: string): PackageDetailsWithStatus;
+};

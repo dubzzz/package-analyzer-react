@@ -1,18 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { LoadState } from '../models/LoadState';
 
-type SuccessSearchResult<TR> = {
-  query: string;
-  state: LoadState.Success;
-  results: TR;
-};
-type ErrorSearchResult = {
-  query: string;
-  state: LoadState.Error;
-  error: string;
-};
-type SearchResult<TR> = SuccessSearchResult<TR> | ErrorSearchResult;
-
 export function useSearchQuery<TR>(
   defaultQuery: string,
   defaultResults: TR,
@@ -57,3 +45,17 @@ export function useSearchQuery<TR>(
   );
   return { query, status, setQuery, runQuery, lastSearch };
 }
+
+export type SuccessSearchResult<TR> = {
+  query: string;
+  state: LoadState.Success;
+  results: TR;
+};
+
+export type ErrorSearchResult = {
+  query: string;
+  state: LoadState.Error;
+  error: string;
+};
+
+export type SearchResult<TR> = SuccessSearchResult<TR> | ErrorSearchResult;
