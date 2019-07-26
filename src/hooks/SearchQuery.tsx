@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { LoadState } from '../models/LoadState';
 
 export function useSearchQuery<TR>(
@@ -6,9 +6,9 @@ export function useSearchQuery<TR>(
   defaultResults: TR,
   queryToResults: (q: string) => Promise<TR>
 ) {
+  const [retry, setRetry] = useState(0);
   const [query, setQuery] = useState(defaultQuery);
   const [status, setStatus] = useState(LoadState.Success);
-  const refQuery = useRef(query);
 
   const [lastSearch, setLastSearch] = useState<SearchResult<TR>>({
     query: defaultQuery,
@@ -16,34 +16,36 @@ export function useSearchQuery<TR>(
     results: defaultResults
   });
 
-  const runQuery = () => {
-    const ongoingQuery = refQuery.current;
-    setStatus(LoadState.OnGoing);
-    queryToResults(ongoingQuery).then(
-      results => {
-        if (refQuery.current !== ongoingQuery) return;
-        setStatus(LoadState.Success);
-        setLastSearch({ query: ongoingQuery, state: LoadState.Success, results });
-      },
-      error => {
-        if (refQuery.current !== ongoingQuery) return;
-        setStatus(LoadState.Error);
-        setLastSearch({
-          query: ongoingQuery,
-          state: LoadState.Error,
-          error: (error as any).message || String(error)
-        });
-      }
-    );
-  };
   useEffect(
     () => {
-      refQuery.current = query;
+      let canceled = false;
+      const runQuery = async () => {
+        setStatus(LoadState.OnGoing);
+        try {
+          const results = await queryToResults(query);
+          if (canceled) return;
+
+          setStatus(LoadState.Success);
+          setLastSearch({ query, state: LoadState.Success, results });
+        } catch (err) {
+          if (canceled) return;
+
+          setStatus(LoadState.Error);
+          setLastSearch({
+            query: query,
+            state: LoadState.Error,
+            error: err.message || String(err)
+          });
+        }
+      };
       runQuery();
+      return () => {
+        canceled = true;
+      };
     },
-    [query]
+    [query, retry]
   );
-  return { query, status, setQuery, runQuery, lastSearch };
+  return { query, status, setQuery, runQuery: () => setRetry(r => r + 1), lastSearch };
 }
 
 export type SuccessSearchResult<TR> = {
