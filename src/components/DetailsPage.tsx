@@ -9,7 +9,7 @@ function DetailsPage(props: PropsType) {
   return (
     <Fragment>
       <FloatingMenu />
-      <PackageDetailsGraph packageName={props.match.params.package} />
+      <PackageDetailsGraph packageName={decodeURIComponent(props.match.params.package)} />
     </Fragment>
   );
 }
