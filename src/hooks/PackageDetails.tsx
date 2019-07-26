@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { LoadState } from '../models/LoadState';
 import { NpmApi } from '../api/npm/NpmApi';
 
@@ -8,26 +8,20 @@ const PackageDetailsContext = createContext(defaultPackageDetails);
 export function PackageDetailsProvider<TProps>(props: TProps) {
   const [packages, setPackages] = useState<AllPackageDetails>({});
 
-  const getPackageDetails = (packageName: string) => {
+  const loadPackageDetails = useCallback(async (packageName: string) => {
     if (packages[packageName]) return packages[packageName];
 
-    const newPackageDetails: PackageDetailsWithStatus = { status: LoadState.OnGoing };
-    setPackages(p => ({ ...p, [packageName]: newPackageDetails }));
+    setPackages(p => ({ ...p, [packageName]: { status: LoadState.OnGoing } }));
+    try {
+      const r = await NpmApi.deps(packageName);
+      const dependencies = Object.keys(r.collected.metadata.dependencies || {});
+      setPackages(p => ({ ...p, [packageName]: { status: LoadState.Success, package: { dependencies } } }));
+    } catch (_err) {
+      setPackages(p => ({ ...p, [packageName]: { status: LoadState.Error } }));
+    }
+  }, []);
 
-    NpmApi.deps(packageName).then(
-      r => {
-        const dependencies = Object.keys(r.collected.metadata.dependencies || {});
-        setPackages(p => ({ ...p, [packageName]: { status: LoadState.Success, package: { dependencies } } }));
-      },
-      _err => {
-        setPackages(p => ({ ...p, [packageName]: { status: LoadState.Error } }));
-      }
-    );
-
-    return newPackageDetails;
-  };
-
-  return <PackageDetailsContext.Provider value={{ getPackageDetails: getPackageDetails }} {...props} />;
+  return <PackageDetailsContext.Provider value={{ packages, loadPackageDetails }} {...props} />;
 }
 
 export function usePackageDetails() {
@@ -52,5 +46,6 @@ export type AllPackageDetails = {
 };
 
 export type PackageDetailsContextType = {
-  getPackageDetails(packageName: string): PackageDetailsWithStatus;
+  packages: { [packageName: string]: PackageDetailsWithStatus };
+  loadPackageDetails(packageName: string): void;
 };

@@ -17,7 +17,7 @@ function buildInitialState(
 }
 
 export function useDependencyGraph(packageName: string): DependencyGraph {
-  const { getPackageDetails } = usePackageDetails();
+  const { packages, loadPackageDetails } = usePackageDetails();
   const [incrementalGraph, setIncrementalGraph] = useState(buildInitialState(packageName));
 
   const incrementalGraphBuild = (currentGraph: typeof incrementalGraph) => {
@@ -31,7 +31,11 @@ export function useDependencyGraph(packageName: string): DependencyGraph {
     const unvisited: { label: string; depth: number }[] = [...currentGraph.ongoingNodes];
     while (unvisited.length > 0) {
       const { label: currentPackage, depth } = unvisited.pop()!;
-      const packageDetails = getPackageDetails(currentPackage);
+      let packageDetails = packages[currentPackage];
+      if (!packageDetails) {
+        packageDetails = { status: LoadState.OnGoing };
+        loadPackageDetails(currentPackage);
+      }
       const node = { label: currentPackage, depth, status: packageDetails.status };
       switch (packageDetails.status) {
         case LoadState.Error:
@@ -62,7 +66,7 @@ export function useDependencyGraph(packageName: string): DependencyGraph {
     },
     [packageName]
   );
-  useEffect(() => incrementalGraphBuild(incrementalGraph), [getPackageDetails]);
+  useEffect(() => incrementalGraphBuild(incrementalGraph), [packages]);
 
   return {
     graph: { nodes: incrementalGraph.nodes.concat(incrementalGraph.ongoingNodes), links: incrementalGraph.links },
